@@ -7,6 +7,7 @@ from config import Config
 
 
 transform = transforms.Compose([
+    transforms.CenterCrop(178),
     transforms.Resize(Config.image_target_size),
     transforms.ToTensor(), 
     transforms.Lambda(lambda t: (t * 2) - 1),
