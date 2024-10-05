@@ -21,6 +21,13 @@ reverse_transform = transforms.Compose([
     transforms.ToPILImage(),
 ])
 
+flowers_transform = transforms.Compose([
+    transforms.CenterCrop(500),
+    transforms.Resize(Config.image_target_size),
+    transforms.ToTensor(), 
+    transforms.Lambda(lambda t: (t * 2) - 1),
+])
+
 
 class DDPMImageDataset(Dataset):
     def __init__(self, root, transform=None):
@@ -38,8 +45,8 @@ class DDPMImageDataset(Dataset):
         if self.transform:
             image = self.transform(image)
         
-        return image
+        return image, 0
     
 
 def get_loader(dataset: DDPMImageDataset, batch_size: int, shuffle=False):
-    return DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
+    return DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, drop_last=True)
