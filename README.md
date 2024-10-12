@@ -55,3 +55,9 @@ If you don't want to use GPU when you run it in container, run this command from
 ```bash
   docker compose up
 ```
+
+If you want to run the container in a GPU using environment, run this command from the root directory:
+
+```bash
+  docker compose up --gpus all
+```
