@@ -49,3 +49,9 @@ Other:
 - Dockerfile: Contains a basic pytorch-cuda container description.
 
 ## Run
+
+If you don't want to use GPU when you run it in container, run this command from the root directory:
+
+```bash
+  docker compose up
+```
