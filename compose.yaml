@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  ddpm-container:  
+    build:
+      context: .
+    volumes:
+      - ./data:/diffusion-model/data
+      - ./model:/diffusion-model/model
+      - ./logs:/diffusion-model/logs
