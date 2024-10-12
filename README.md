@@ -4,10 +4,10 @@ The repository is used to implement DDPM and document the work for the DeepLearn
 
 ## Project homework - Image generation with diffusion models
 
-| Group  |  Details |
-| -------- | ------- |
-| Team name | RelAITeam |
-| Members | Attila Nemes (B6RYIK), Csaba Potyok (OZNVQ4) | 
+| Group     | Details                                      |
+| --------- | -------------------------------------------- |
+| Team name | RelAITeam                                    |
+| Members   | Attila Nemes (B6RYIK), Csaba Potyok (OZNVQ4) |
 
 ## Project description
 
@@ -18,15 +18,19 @@ The repository is used to implement DDPM and document the work for the DeepLearn
 ## Related works
 
 ### Related GitHub repositories:
+
 - https://huggingface.co/blog/annotated-diffusion
 - https://github.com/huggingface/diffusers
 
 ### Related papers:
+
 - https://arxiv.org/abs/2006.11239
 - https://arxiv.org/abs/2010.02502
 
 ## Files
+
 Our .py and .ipynb files are located in the **src** folder:
+
 - config.py: It will contains all parameter that we want to optimize at hyperopt (not all parameters currently included).
 - main.py: To load data and start training.
 - preprocess_data_source.py: The CelebA dataset is sometimes unavailable (restriction of Drive), so we downloaded it as ZIP and preprocess with this script (split into train/val/test based on [list_eval_partition.txt](https://drive.google.com/drive/folders/0B7EVK8r0v71pdjI3dmwtNm5jRkE?resourcekey=0-TD_RXHhlG6LPvwHReuw6IA)
@@ -37,10 +41,11 @@ Our .py and .ipynb files are located in the **src** folder:
 - data_visualization:
   - plot_hist.py: Plot a histogram (RGB values) for images from dataloader (from first batch, first 5 elements)
   - plot_image.py: Plot images from dataloader (from first batch, first 10 elements)
+- first_step.ipynb: we tried out the dataset loading and the visualization
 
 Other:
+
 - requirements.txt: Contains all Python libraries that we want to use.
 - Dockerfile: Contains a basic pytorch-cuda container description.
 
 ## Run
-
