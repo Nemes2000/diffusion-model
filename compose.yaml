@@ -8,3 +8,5 @@ services:
       - ./data:/diffusion-model/data
       - ./model:/diffusion-model/model
       - ./logs:/diffusion-model/logs
+      - ./wandb:/diffusion-model/wandb
+      - ./stat.json:/diffusion-model/stat.json

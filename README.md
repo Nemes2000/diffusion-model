@@ -33,7 +33,7 @@ Our .py and .ipynb files are located in the **src** folder:
 
 - config.py: It will contains all parameter that we want to optimize at hyperopt (not all parameters currently included).
 - main.py: To load data and start training.
-- preprocess_data_source.py: The CelebA dataset is sometimes unavailable (restriction of Drive), so we downloaded it as ZIP and preprocess with this script (split into train/val/test based on [list_eval_partition.txt](https://drive.google.com/drive/folders/0B7EVK8r0v71pdjI3dmwtNm5jRkE?resourcekey=0-TD_RXHhlG6LPvwHReuw6IA)
+- preprocess_data_source.py: The CelebA dataset is sometimes unavailable (restriction of Drive), so we downloaded it as ZIP and preprocess with this script (split into train/val/test based on [list_eval_partition.txt](https://drive.google.com/drive/folders/0B7EVK8r0v71pdjI3dmwtNm5jRkE?resourcekey=0-TD_RXHhlG6LPvwHReuw6IA))
 - data_module:
   - celeba.py: Define datamodule to load CelebA images
   - celeba_dataset.py: custom dataset to handle CelebA images that were downloaded as ZIP from [preprocessed version](https://drive.google.com/drive/folders/0B7EVK8r0v71pTUZsaXdaSnZBZzg?resourcekey=0-rJlzl934LzC-Xp28GeIBzQ)
@@ -50,14 +50,47 @@ Other:
 
 ## Run
 
-If you don't want to use GPU when you run it in container, run this command from the root directory:
+First build the image, run this command from the root directory:
 
 ```bash
-  docker compose up
+docker build -t [IMAGE_NAME] .
 ```
 
-If you want to run the container in a GPU using environment, run this command from the root directory:
+To train the model, you need to run the container in the following format from the root directory:
 
 ```bash
-  docker compose up --gpus all
+docker run --gpus all --rm -v ./data:/diffusion-model/data -v ./model:/diffusion-model/model -v ./logs:/diffusion-model/logs [IMAGE_NAME] python src/train.py
+```
+
+If you want to specify the training you can set this flag:
+
+- _-model-name_: The model name.
+- _-log-wandb_: Turn on wandb logging.
+- _--wandb-project_: Set the name of the wandb project.
+- _-epoch_: Set the number of the epoch (default: 50).
+- _-dataset_: Set the dataset for training ('celeba' / 'flowers', default: 'flowers')
+
+Example usage:
+
+```bash
+docker run --gpu all --rm -v ./data:/diffusion-model/data -v ./model:/diffusion-model/model -v ./logs:/diffusion-model/logs [IMAGE_NAME] python src/train.py -model-name 'vae-baseline' -log-wandb --wandb-project "vae-baseline" -dataset "celeba" -epoch 10
+```
+
+To eval the model, you need to run the container in the following format from the root directory:
+
+```bash
+docker run --gpus all --rm -v ./data:/diffusion-model/data -v ./model:/diffusion-model/model -v ./logs:/diffusion-model/logs [IMAGE_NAME] python src/eval.py -path "./model/vae-baseline" -model "best"
+```
+
+The evaluation requires that the model is located in the mounted folder pointed to by the **-path** flag.
+
+If you want to specify the evaluation you can set this flag:
+
+- _-stat-file_: Set the stat file's name to save the evaluation result. (default: 'stat.json')
+- _-dataset_: Set the dataset for evaluation ('celeba' / 'flowers', default: 'flowers')
+
+Example usage:
+
+```bash
+docker run --gpus all --rm -v ./data:/diffusion-model/data -v ./model:/diffusion-model/model -v ./logs:/diffusion-model/logs [IMAGE_NAME] python src/eval.py -path "./model/vae-baseline" -model "best" -dataset "flowers"
 ```
