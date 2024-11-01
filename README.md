@@ -47,6 +47,7 @@ Other:
 
 - requirements.txt: Contains all Python libraries that we want to use.
 - Dockerfile: Contains a basic pytorch-cuda container description.
+- [evaluation.md](https://github.com/Nemes2000/diffusion-model/blob/main/evaluation.md): Contains approaches and expectations for the evaluation of models.
 
 ## Run
 
