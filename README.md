@@ -31,16 +31,20 @@ The repository is used to implement DDPM and document the work for the DeepLearn
 
 Our .py and .ipynb files are located in the **src** folder:
 
+- main.py: To load data and plot some generated image with a saved model
 - config.py: It will contains all parameter that we want to optimize at hyperopt (not all parameters currently included).
-- main.py: To load data and start training.
+- eval.py: Calculates a given saved model's IS and FID score on a given dataset (celeba or flowers), and save result into stat.json file
+- train.py: Set up the model and wandb logging for training, and runs a training on given dataset (celeba or flowers)
 - preprocess_data_source.py: The CelebA dataset is sometimes unavailable (restriction of Drive), so we downloaded it as ZIP and preprocess with this script (split into train/val/test based on [list_eval_partition.txt](https://drive.google.com/drive/folders/0B7EVK8r0v71pdjI3dmwtNm5jRkE?resourcekey=0-TD_RXHhlG6LPvwHReuw6IA))
+- baseline_model:
+  - vae.py: Our baseline model, which is a VAE modell
 - data_module:
-  - celeba.py: Define datamodule to load CelebA images
   - celeba_dataset.py: custom dataset to handle CelebA images that were downloaded as ZIP from [preprocessed version](https://drive.google.com/drive/folders/0B7EVK8r0v71pTUZsaXdaSnZBZzg?resourcekey=0-rJlzl934LzC-Xp28GeIBzQ)
+  - celeba.py: Define datamodule to load CelebA images
   - flowers.py: Define datamodule to load Flowers102 images, use torchvision dataset
 - data_visualization:
-  - plot_hist.py: Plot a histogram (RGB values) for images from dataloader (from first batch, first 5 elements)
-  - plot_image.py: Plot images from dataloader (from first batch, first 10 elements)
+  - plot_hist.py: Plot histogram (RGB values) for images from dataloader (from first batch, first 5 elements)
+  - plot_image.py: Contains the plot functions for plot images from dataloader (from first batch, first 10 elements), for plot images from latent dimension and for plot multiple generated images from a given image.
 - first_step.ipynb: we tried out the dataset loading and the visualization
 
 Other:
