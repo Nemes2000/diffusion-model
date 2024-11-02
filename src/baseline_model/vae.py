@@ -4,12 +4,15 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 from config import Config
+from torchmetrics.image.fid import FrechetInceptionDistance
+from torchmetrics.image.inception import InceptionScore
+from util import up_scale_images
 
 class BaseLineImageGenerationVAE(pl.LightningModule):
-    def __init__(self, latent_dim, in_channels=3, transform=None):
+    def __init__(self, latent_dim, in_channels=3, inverse_transform=None):
         super().__init__()
         self.save_hyperparameters()
-        self.transform = transform
+        self.inverse_transform = inverse_transform
         hidden_dims=[32, 64, 128, 256, 512]
         self.final_dim = hidden_dims[-1]
         modules = []
@@ -63,6 +66,10 @@ class BaseLineImageGenerationVAE(pl.LightningModule):
             nn.Conv2d(hidden_dims[-1], out_channels=3,
                       kernel_size=3, padding=1),
             nn.Sigmoid())
+        
+        # Setup Inception and Frechet Inception Distance scoring for test
+        self.inception = InceptionScore()
+        self.fid = FrechetInceptionDistance(feature=64)
 
     def encode(self, x):
         result = self.encoder(x)
@@ -81,7 +88,6 @@ class BaseLineImageGenerationVAE(pl.LightningModule):
         result = result.view(-1, self.final_dim, self.size, self.size)
         result = self.decoder(result)
         result = self.final_layer(result)
-        if self.transform: result = self.transform(result)
         return result
     
     @staticmethod
@@ -121,8 +127,22 @@ class BaseLineImageGenerationVAE(pl.LightningModule):
         recon_batch, mu, log_var = self(image)
         log_var = torch.clamp_(log_var, -10, 10)
         loss = BaseLineImageGenerationVAE.loss_function(recon_batch, image, mu, log_var)
+        upscaled_orig = up_scale_images(image, self.inverse_transform)
+        upscaled_gen = up_scale_images(recon_batch.reshape((-1, 3) + Config.image_target_size), self.inverse_transform)
+    
+        self.inception.update(upscaled_gen)
+        self.fid.update(upscaled_orig, real=True)
+        self.fid.update(upscaled_gen, real=False)
         self.log("test_loss", loss)
         return loss
+    
+    def on_test_epoch_end(self):
+        inception_score = self.inception.compute()
+        fid_score = self.fid.compute()
+        self.log("test_inception_mean", inception_score[0])
+        self.log("test_inception_std", inception_score[1])
+        self.log("test_fid", fid_score)
+        return super().on_test_epoch_end()
 
     def configure_optimizers(self):
         return torch.optim.AdamW(self.parameters(), lr=Config.learning_rate, weight_decay=Config.weight_decay)

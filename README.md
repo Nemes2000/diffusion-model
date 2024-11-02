@@ -51,9 +51,17 @@ Other:
 
 - requirements.txt: Contains all Python libraries that we want to use.
 - Dockerfile: Contains a basic pytorch-cuda container description.
-- [evaluation.md](https://github.com/Nemes2000/diffusion-model/blob/main/evaluation.md): Contains approaches and expectations for the evaluation of models.
+- doc: 
+  - [evaluation.md](https://github.com/Nemes2000/diffusion-model/blob/main/doc/evaluation.md): Contains approaches and expectations for the evaluation of models.
 
 ## Run
+
+For our Docker container, you should mount volumes for the following folders:
+- diffusion-model/data: It contains the dowloaded datasets (preprocessed celeba and flowers102).
+- diffusion-model/model: It contains the best model after the training.
+- diffusion-model/logs: It contains TensorBoard logs if we use default logging.
+- diffusion-model/wandb: It contains Wandb logs if we use wandb logging with **-log-wandb** flag.
+- diffusion-model/stat.json: It contains evaluation result in a JSON object (with **-stat-file** flag you can change it)
 
 First build the image, run this command from the root directory:
 
