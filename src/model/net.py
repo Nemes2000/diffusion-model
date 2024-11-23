@@ -4,7 +4,7 @@ from config import Config
 import torch
 
 class UNet(nn.Module):
-    def __init__(self, img_channels = 3, time_embedding_dims = Config.time_embedding_dims, sequence_channels = (64, 128, 256)):
+    def __init__(self, img_channels = 3, time_embedding_dims = Config.time_embedding_dims, sequence_channels = (64, 128, 256, 512, 1024)):
         super().__init__()
         self.time_embedding_dims = time_embedding_dims
 
