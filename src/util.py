@@ -13,9 +13,12 @@ def up_scale_images(
         transforms.Lambda(lambda x: x * 255.0)
     ])
 
-    upscaled_images = []
+    num_images = len(images)
+    image_shape = (3, 299, 299)
 
-    for image in images:
-        upscaled_images.append(up_scale_transform(inverse_transform(image)))
+    upscaled_images = torch.empty((num_images, *image_shape), dtype=torch.uint8).to(torch.device('cuda'))
 
-    return torch.stack(upscaled_images).to(torch.uint8)
+    for i, image in enumerate(images):
+        upscaled_images[i] = up_scale_transform(inverse_transform(image))
+        
+    return upscaled_images.to(torch.uint8)
