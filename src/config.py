@@ -1,3 +1,5 @@
+import torch
+
 class Config():
   # image default crop size in celeba: 218*178
   image_target_size = (64,64)
@@ -7,3 +9,6 @@ class Config():
   weight_decay = 1e-4
   num_of_epochs = 50
   latent_dims = 256
+  optimizer = torch.optim.AdamW
+  time_embedding_dims = 128
+  time_steps = 1000

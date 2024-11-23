@@ -33,7 +33,7 @@ class Flowers102DataModule(pl.LightningDataModule):
 
     def setup(self, stage=None):
         self.train_dataset = torchvision.datasets.Flowers102(root=self.image_folder, split='train', download=True, transform=self.train_transform)
-        self.val_dataset = torchvision.datasets.Flowers102(root=self.image_folder, split='val', download=True, transform=self.train_transform)
+        self.val_dataset = torchvision.datasets.Flowers102(root=self.image_folder, split='val', download=True, transform=self.test_transform)
         self.test_dataset = torchvision.datasets.Flowers102(root=self.image_folder, split='test', download=True, transform=self.test_transform)
 
     def train_dataloader(self):

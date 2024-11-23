@@ -5,7 +5,10 @@ from config import Config
 from data_module.flowers import Flowers102DataModule
 from data_module.celeba import CelebADataModule
 from baseline_model.vae import BaseLineImageGenerationVAE
-
+from model.ddpm import DDPModule
+from model.net import UNet
+from model.scheduler.time_scheduler import TimeScheduler
+from model.scheduler.function import LinearScheduleFn
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -43,7 +46,11 @@ if __name__ == '__main__':
     data_module.prepare_data()
     data_module.setup()  
 
-    model = BaseLineImageGenerationVAE(Config.latent_dims)
+    #model = BaseLineImageGenerationVAE(Config.latent_dims)
+
+    time_scheduler = TimeScheduler(LinearScheduleFn(0.0001, 0.02), Config.time_steps)
+    unet = UNet()
+    model = DDPModule(time_scheduler=time_scheduler, model=unet, inverse_transform=data_module.reverse_transform)
 
     trainer.fit(model, data_module)
     

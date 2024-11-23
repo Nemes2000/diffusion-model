@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from baseline_model.vae import BaseLineImageGenerationVAE
+from model.ddpm import DDPModule
 from config import Config
 import torch
 from torchvision import transforms
@@ -50,5 +51,12 @@ def plot_image_representations(model: BaseLineImageGenerationVAE, image: torch.T
         ax.axis('off')
 
     fig.suptitle('Generated images from a random image')
+    plt.tight_layout()
+    plt.show()
+
+def plot_from_noise(model: DDPModule, transform: transforms):
+    image = model.time_scheduler.sample(model.model, Config.image_target_size[0], 1, 3)[-1]
+    image = transform(image[0])
+    plt.imshow(image)
     plt.tight_layout()
     plt.show()

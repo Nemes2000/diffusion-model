@@ -31,8 +31,8 @@ class CelebADataModule(pl.LightningDataModule):
 
     def setup(self, stage=None):
         self.train_dataset = CelebADataset(root='./data/dataset/train', transform=self.train_transform)
-        self.val_dataset = CelebADataset(root='./data/dataset/validation', transform=self.train_transform)
-        self.test_dataset = CelebADataset(root='./data/dataset/test', transform=self.train_transform)
+        self.val_dataset = CelebADataset(root='./data/dataset/validation', transform=self.test_transform)
+        self.test_dataset = CelebADataset(root='./data/dataset/test', transform=self.test_transform)
 
     def train_dataloader(self):
         return DataLoader(
