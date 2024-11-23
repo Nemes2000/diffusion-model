@@ -53,6 +53,7 @@ Other:
 - Dockerfile: Contains a basic pytorch-cuda container description.
 - doc: 
   - [evaluation.md](https://github.com/Nemes2000/diffusion-model/blob/main/doc/evaluation.md): Contains approaches and expectations for the evaluation of models.
+  - [vae-result.md](https://github.com/Nemes2000/diffusion-model/blob/main/doc/vae-result.md): Contains the results of the VAE baseline model.
 
 ## Run
 
