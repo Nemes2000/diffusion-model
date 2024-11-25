@@ -18,6 +18,7 @@ if __name__ == '__main__':
     parser.add_argument('-epoch', type=int, default=Config.num_of_epochs)
     parser.add_argument('-model-name', type=str, default='diffusion-model')
     parser.add_argument('-dataset', type=str, choices=['flowers', 'celeba'], default='flowers')
+    parser.add_argument('-type', type=str, choices=['baseline', 'diffusion'], default='baseline')
 
     args = parser.parse_args()
 
@@ -46,11 +47,12 @@ if __name__ == '__main__':
     data_module.prepare_data()
     data_module.setup()  
 
-    model = BaseLineImageGenerationVAE(Config.latent_dims)
-
-    #time_scheduler = TimeScheduler(LinearScheduleFn(0.0001, 0.02), Config.time_steps)
-    #unet = UNet()
-    #model = DDPModule(time_scheduler=time_scheduler, model=unet, inverse_transform=data_module.reverse_transform)
+    if args.type == 'baseline':
+        model = BaseLineImageGenerationVAE(Config.latent_dims)
+    else:
+        time_scheduler = TimeScheduler(LinearScheduleFn(0.0001, 0.02), Config.time_steps)
+        unet = UNet()
+        model = DDPModule(time_scheduler=time_scheduler, model=unet, inverse_transform=data_module.reverse_transform)
 
     trainer.fit(model, data_module)
     
