@@ -12,3 +12,9 @@ class Config():
   optimizer = torch.optim.AdamW
   time_embedding_dims = 128
   time_steps = 1000
+  model_name = "diffusion-model"
+  optimizer_map = {
+    'adam': torch.optim.Adam,
+    'sgd': torch.optim.SGD,
+    'adamW': torch.optim.AdamW
+  }
