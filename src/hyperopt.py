@@ -7,15 +7,18 @@ from model.ddpm import DDPModule
 from model.net import UNet
 from model.scheduler.function import LinearScheduleFn
 from model.scheduler.time_scheduler import TimeScheduler
-from train import train_node_classifier
 import argparse
 import pytorch_lightning as pl
 
 
 
-def optimalization(data_module, project_name):
+def optimalization(data_module, project_name, model):
     sweep_config = {
-        'method': 'bayes'
+        'method': 'bayes',
+        'metric': {
+        'goal': 'minimize',
+        'name': 'val_loss'
+      }
     }
 
     parameters_dict = {
@@ -50,18 +53,19 @@ def optimalization(data_module, project_name):
     }
     )
 
+    sweep_config['parameters'] = parameters_dict
     sweep_id = wandb.sweep(sweep_config, project=project_name)
 
-    wandb.agent(sweep_id=sweep_id, function=wrapped_opt_train_function(data_module=data_module), count=Config.optimalization_step)
+    wandb.agent(sweep_id=sweep_id, function=wrapped_opt_train_function(data_module=data_module, model=model), count=Config.optimalization_step)
     wandb.teardown()
 
 
-def wrapped_opt_train_function(data_module):
+def wrapped_opt_train_function(data_module, model):
     def train_wrapper(config=None):
-        optimalization_train(config=config, data_module=data_module)
+        optimalization_train(config=config, data_module=data_module, model=model)
     return train_wrapper
 
-def optimalization_train(config=None, data_module=None):
+def optimalization_train(config=None, data_module=None, model=None):
     with wandb.init(config=config):
         config = wandb.config
 
@@ -93,6 +97,7 @@ if __name__ == "__main__":
     parser.add_argument('-dataset', type=str, choices=['flowers', 'celeba'], default='flowers')
     parser.add_argument('--wandb-project', type=str, default='diffusion-model')
     parser.add_argument('-model-name', type=str, default='diffusion-model')
+    parser.add_argument('-type', type=str, choices=['baseline', 'diffusion'], default='baseline')
     args = parser.parse_args()
 
     wandb.login()
@@ -115,4 +120,4 @@ if __name__ == "__main__":
         unet = UNet()
         model = DDPModule(time_scheduler=time_scheduler, model=unet, inverse_transform=data_module.reverse_transform)
 
-    optimalization(data_module=data_module, project_name=args.wandb_project)
+    optimalization(data_module=data_module, project_name=args.wandb_project, model=model)

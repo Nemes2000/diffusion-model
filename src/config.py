@@ -18,3 +18,4 @@ class Config():
     'sgd': torch.optim.SGD,
     'adamW': torch.optim.AdamW
   }
+  optimalization_step=10
