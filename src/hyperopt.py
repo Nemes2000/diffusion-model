@@ -81,6 +81,7 @@ def optimalization_train(config=None, data_module=None, model=None):
         checkpoint_callback = pl.callbacks.ModelCheckpoint(monitor="val_loss", mode="min", dirpath=f'./model/{Config.model_name}', filename='best', save_top_k=1)
         early_stopping_callback = pl.callbacks.early_stopping.EarlyStopping(monitor="val_loss", patience=5, verbose=False, mode="min")
 
+        logger = pl.loggers.WandbLogger(project=args.wandb_project, log_model="all")
         trainer = pl.Trainer(
             max_epochs=Config.num_of_epochs,
             logger=logger,
@@ -102,7 +103,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     wandb.login()
-    logger = pl.loggers.WandbLogger(project=args.wandb_project, log_model="all")
 
     Config.model_name = args.model_name
 
