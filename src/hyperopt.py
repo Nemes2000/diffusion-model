@@ -40,7 +40,8 @@ def optimalization(data_module, project_name, model):
             'max': 0.1
         },
         'epoch': {
-            'distribution': 'uniform',
+            'distribution': 'q_log_uniform_values',
+            'q': 1,
             'min': 30,
             'max': 100
         },
