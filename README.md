@@ -13,6 +13,9 @@ The repository is used to implement DDPM and document the work for the DeepLearn
 
 **Task description**: Implement and train unconditional diffusion models, such as DDPM (Denoising Diffusion Probabilistic Model) or DDIM (Denoising Diffusion Implicit Model) for generating realistic images. Evaluate the capabilities of the models on two different datasets, such as CelebA and Flowers102.
 
+> [!NOTE]  
+> Since the original CelebA dataset is often not accessible online, we used the CelebA dataset from the huggingface site. There is only a quantitative difference in the two datasets so it was considered more convenient for the project to have a permanently accessible dataset.
+
 **Our approach**: We plan to implement a DDPM model to try to generate as realistic images as possible. We plan to measure the model on the CelebA and Flowers102 datasets. We plan to quantize the model (and measure the quality changes) and use [Gradio](https://www.gradio.app/) to build an AI service from it.
 
 ## Related works
@@ -51,13 +54,14 @@ Other:
 
 - requirements.txt: Contains all Python libraries that we want to use.
 - Dockerfile: Contains a basic pytorch-cuda container description.
-- doc: 
+- doc:
   - [evaluation.md](https://github.com/Nemes2000/diffusion-model/blob/main/doc/evaluation.md): Contains approaches and expectations for the evaluation of models.
   - [vae-result.md](https://github.com/Nemes2000/diffusion-model/blob/main/doc/vae-result.md): Contains the results of the VAE baseline model.
 
 ## Run
 
 For our Docker container, you should mount volumes for the following folders:
+
 - diffusion-model/data: It contains the dowloaded datasets (preprocessed celeba and flowers102).
 - diffusion-model/model: It contains the best model after the training.
 - diffusion-model/logs: It contains TensorBoard logs if we use default logging.
