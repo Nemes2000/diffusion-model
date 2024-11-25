@@ -1,19 +1,19 @@
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, Subset
 import os
 from PIL import Image
 
 class CelebADataset(Dataset):
-    def __init__(self, root, transform=None):
-        self.root = root
+    def __init__(self, subset: Subset, transform=None):
+        self.subset = subset
         self.transform = transform
-        self.image_paths = [os.path.join(root, img) for img in os.listdir(root) if img.endswith(('.png', '.jpg', '.jpeg'))]
     
     def __len__(self):
-        return len(self.image_paths)
+        return len(self.subset)
     
     def __getitem__(self, idx):
-        img_path = self.image_paths[idx]
-        image = Image.open(img_path).convert('RGB')
+        image = self.subset[idx]
+
+        print(image)
         
         if self.transform:
             image = self.transform(image)

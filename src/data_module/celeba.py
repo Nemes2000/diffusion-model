@@ -1,9 +1,10 @@
 import pytorch_lightning as pl
 from torchvision import transforms
 from config import Config
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Subset
 import numpy as np
 from data_module.celeba_dataset import CelebADataset
+from datasets import load_dataset
 
 class CelebADataModule(pl.LightningDataModule):
     def __init__(self):
@@ -30,9 +31,14 @@ class CelebADataModule(pl.LightningDataModule):
         ])
 
     def setup(self, stage=None):
-        self.train_dataset = CelebADataset(root='./data/dataset/train', transform=self.train_transform)
-        self.val_dataset = CelebADataset(root='./data/dataset/validation', transform=self.test_transform)
-        self.test_dataset = CelebADataset(root='./data/dataset/test', transform=self.test_transform)
+        self.dataset = dataset = load_dataset("student/celebA", split="train")
+        train_split = 0.6
+        val_split = 0.2
+        train_end_index = int(len(dataset) * train_split)
+        val_end_index = int(len(dataset) * (train_split + val_split))
+        self.train_dataset = CelebADataset(Subset(dataset, range(train_end_index)), transform=self.train_transform)
+        self.val_dataset = CelebADataset(Subset(dataset, range(train_end_index, val_end_index)), transform=self.test_transform)
+        self.test_dataset = CelebADataset(Subset(dataset, range(val_end_index, len(dataset))), transform=self.test_transform)
 
     def train_dataloader(self):
         return DataLoader(
