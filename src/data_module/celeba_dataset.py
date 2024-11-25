@@ -11,9 +11,7 @@ class CelebADataset(Dataset):
         return len(self.subset)
     
     def __getitem__(self, idx):
-        image = self.subset[idx]
-
-        print(image)
+        image = self.subset[idx]['image']
         
         if self.transform:
             image = self.transform(image)

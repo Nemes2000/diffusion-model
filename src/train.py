@@ -46,11 +46,11 @@ if __name__ == '__main__':
     data_module.prepare_data()
     data_module.setup()  
 
-    #model = BaseLineImageGenerationVAE(Config.latent_dims)
+    model = BaseLineImageGenerationVAE(Config.latent_dims)
 
-    time_scheduler = TimeScheduler(LinearScheduleFn(0.0001, 0.02), Config.time_steps)
-    unet = UNet()
-    model = DDPModule(time_scheduler=time_scheduler, model=unet, inverse_transform=data_module.reverse_transform)
+    #time_scheduler = TimeScheduler(LinearScheduleFn(0.0001, 0.02), Config.time_steps)
+    #unet = UNet()
+    #model = DDPModule(time_scheduler=time_scheduler, model=unet, inverse_transform=data_module.reverse_transform)
 
     trainer.fit(model, data_module)
     
