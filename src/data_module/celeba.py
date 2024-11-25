@@ -31,14 +31,14 @@ class CelebADataModule(pl.LightningDataModule):
         ])
 
     def setup(self, stage=None):
-        self.dataset = dataset = load_dataset("student/celebA", split="train")
+        self.dataset = load_dataset("nielsr/CelebA-faces", split="train", keep_in_memory=True)
         train_split = 0.6
         val_split = 0.2
-        train_end_index = int(len(dataset) * train_split)
-        val_end_index = int(len(dataset) * (train_split + val_split))
-        self.train_dataset = CelebADataset(Subset(dataset, range(train_end_index)), transform=self.train_transform)
-        self.val_dataset = CelebADataset(Subset(dataset, range(train_end_index, val_end_index)), transform=self.test_transform)
-        self.test_dataset = CelebADataset(Subset(dataset, range(val_end_index, len(dataset))), transform=self.test_transform)
+        train_end_index = int(len(self.dataset) * train_split)
+        val_end_index = int(len(self.dataset) * (train_split + val_split))
+        self.train_dataset = CelebADataset(Subset(self.dataset, range(train_end_index)), transform=self.train_transform)
+        self.val_dataset = CelebADataset(Subset(self.dataset, range(train_end_index, val_end_index)), transform=self.test_transform)
+        self.test_dataset = CelebADataset(Subset(self.dataset, range(val_end_index, len(self.dataset))), transform=self.test_transform)
 
     def train_dataloader(self):
         return DataLoader(
