@@ -33,3 +33,7 @@ We generated 25 images using random vectors from the latent space, shown in the 
 
 ![vae-flowers](https://github.com/Nemes2000/diffusion-model/blob/main/images/vae_flowers.png)
 
+### Generated images with VAE-baseline on CelebA
+Also 25 images were generated from the latent space by selecting random vectors. The result was better than for the flowers, but this can be explained by the fact that we had many more images to train on. Here again, the images are mostly blurred, but we can make out facial shapes. The result is more spectacular than with flowers, but far from perfect, partly due to the small number of epochs.
+
+![vae-celeba](https://github.com/Nemes2000/diffusion-model/blob/main/images/vae_celeba.png)
