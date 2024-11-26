@@ -10,7 +10,7 @@ The VAE model was measured using the basic Inception V3 model to calculate the F
 | Model         | Dataset    | Loss   | FID    | Inception mean | Inception std |
 |---------------|------------|--------|--------|----------------|---------------|
 | VAE-baseline  | Flowers102 | 0.2791 | 8.8065 | 3.4239         | 0.2592        |
-| VAE-baseline  | CelebA     |        |        |                |               |
+| VAE-baseline  | CelebA     | 4.5525 | 0.2353 | 3.0732         | 0.0394        |
 
 
 ### Results on Flowers102 with VAE-baseline
@@ -25,7 +25,12 @@ The VAE model was measured using the basic Inception V3 model to calculate the F
 
 ### Results on Celeba with VAE-baseline
 ```json
-
+{
+    "inception_mean": 3.073242664337158,
+    "inception_std": 0.03946512192487717,
+    "fid": 4.552577495574951,
+    "loss": 0.23535996675491333
+}
 ```
 
 ### Generated images with VAE-baseline on Flowers102
