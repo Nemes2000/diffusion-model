@@ -65,7 +65,7 @@ if __name__ == '__main__':
     samples = time_scheduler.sample(model, image_size=Config.image_size, batch_size=1, channels=Config.channels)
     random_index = 0
     sample = samples[-1]
-    plt.imsave('generated_image.jpg', data_module.reverse_transform(sample[random_index]).reshape(Config.image_size, Config.image_size, Config.channels))
+    plt.imsave('generated_image.jpg', data_module.reverse_transform(sample[random_index]))
     
     if args.log_wandb:
         wandb.finish()
