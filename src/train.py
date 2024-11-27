@@ -25,7 +25,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     checkpoint_callback = pl.callbacks.ModelCheckpoint(monitor="val_loss", mode="min", dirpath=f'./model/{args.model_name}', filename='best', save_top_k=1)
-    early_stopping_callback = pl.callbacks.early_stopping.EarlyStopping(monitor="val_loss", patience=5, verbose=False, mode="min")
+    early_stopping_callback = pl.callbacks.early_stopping.EarlyStopping(monitor="val_loss", patience=30, verbose=False, mode="min")
 
     if args.log_wandb:
         wandb.login()
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     samples = time_scheduler.sample(model, image_size=Config.image_size, batch_size=1, channels=Config.channels)
     random_index = 0
     sample = samples[-1]
-    plt.imsave('generated_image.jpg', data_module.reverse_transform(sample)[random_index].reshape(Config.image_size, Config.image_size, Config.channels))
+    plt.imsave('generated_image.jpg', data_module.reverse_transform(sample[random_index]).reshape(Config.image_size, Config.image_size, Config.channels))
     
     if args.log_wandb:
         wandb.finish()
