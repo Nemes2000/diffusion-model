@@ -58,9 +58,9 @@ def plot_from_noise(model: DDPModule, transform: transforms, n = 5):
     image = model.time_scheduler.sample(model.model, Config.image_target_size[0], n*n, 3)[-1]
     _, axn = plt.subplots(n, n, figsize=(8, 8), sharex=True, sharey=True)
     for i in range(n * n):
-        image = transform(image[0])
+        img = transform(image[i])
         ax = axn[i // n, i % n]
-        ax.imshow(image)
+        ax.imshow(img)
         ax.axis('off')
     plt.tight_layout()
     plt.savefig("diffusion_batch_image.png")
