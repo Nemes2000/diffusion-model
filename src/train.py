@@ -9,8 +9,9 @@ from baseline_model.vae import BaseLineImageGenerationVAE
 from model.ddpm import DDPModule
 from model.net import UNet
 from model.net_v2 import Unet
+from data_visualization.plot_image import plot_from_noise
 from model.scheduler.time_scheduler import TimeScheduler
-from model.scheduler.function import LinearScheduleFn
+from model.scheduler.function import CosineBetaScheduleFn
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -52,7 +53,7 @@ if __name__ == '__main__':
     if args.type == 'baseline':
         model = BaseLineImageGenerationVAE(Config.latent_dims)
     else:
-        time_scheduler = TimeScheduler(LinearScheduleFn(0.0001, 0.02), Config.time_steps)
+        time_scheduler = TimeScheduler(CosineBetaScheduleFn(0.0001, 0.02), Config.time_steps)
         unet = Unet(
             dim=Config.image_size,
             channels=Config.channels,
@@ -62,10 +63,8 @@ if __name__ == '__main__':
 
     trainer.fit(model, data_module)
 
-    samples = time_scheduler.sample(model, image_size=Config.image_size, batch_size=1, channels=Config.channels)
-    random_index = 0
-    sample = samples[-1]
-    plt.imsave('generated_image.jpg', data_module.reverse_transform(sample[random_index]))
+    if args.type == 'diffusion':
+        plot_from_noise(model=model, transform=data_module.reverse_transform)
     
     if args.log_wandb:
         wandb.finish()

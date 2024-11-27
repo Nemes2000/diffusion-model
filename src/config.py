@@ -4,12 +4,12 @@ class Config():
   # image default crop size in celeba: 218*178
   image_target_size = (64,64)
   batch_size = 64
-  num_of_workers = 0
+  num_of_workers = 10
   learning_rate = 1e-3
   weight_decay = 1e-4
   num_of_epochs = 50
   latent_dims = 256
-  optimizer = torch.optim.AdamW
+  optimizer = torch.optim.SGD
   time_embedding_dims = 128
   time_steps = 300
   model_name = "diffusion-model"
