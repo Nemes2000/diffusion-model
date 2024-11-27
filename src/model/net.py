@@ -1,5 +1,5 @@
 from torch import nn
-from model.block import Block
+from model.layers.block import Block
 from config import Config
 import torch
 

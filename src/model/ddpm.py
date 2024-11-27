@@ -1,7 +1,6 @@
 import pytorch_lightning as pl
 import torch
 from torch import nn
-from torch.nn import functional as F
 from torchmetrics.image.fid import FrechetInceptionDistance
 from torchmetrics.image.inception import InceptionScore
 from model.scheduler.time_scheduler import TimeScheduler

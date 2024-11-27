@@ -11,7 +11,7 @@ class Config():
   latent_dims = 256
   optimizer = torch.optim.AdamW
   time_embedding_dims = 128
-  time_steps = 1000
+  time_steps = 300
   model_name = "diffusion-model"
   optimizer_map = {
     'adam': torch.optim.Adam,
@@ -19,3 +19,5 @@ class Config():
     'adamW': torch.optim.AdamW
   }
   optimalization_step=10
+  image_size= 64
+  channels = 3
