@@ -53,7 +53,7 @@ if __name__ == '__main__':
     if args.type == 'baseline':
         model = BaseLineImageGenerationVAE(Config.latent_dims)
     else:
-        time_scheduler = TimeScheduler(CosineBetaScheduleFn(0.0001, 0.02), Config.time_steps)
+        time_scheduler = TimeScheduler(CosineBetaScheduleFn(), Config.time_steps)
         unet = Unet(
             dim=Config.image_size,
             channels=Config.channels,
