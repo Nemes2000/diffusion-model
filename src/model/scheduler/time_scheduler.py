@@ -45,13 +45,14 @@ class TimeScheduler:
         model_mean = sqrt_recip_alphas_t * (
             x - betas_t * model(x, t) / sqrt_one_minus_alphas_cumprod_t
         )
+        posterior_variance_t = betas_t
 
         if t_index == 0:
             return model_mean
         else:
-            posterior_variance_t = self.extract(self.posterior_variance, t, x.shape)
             noise = torch.randn_like(x)
-            return model_mean + torch.sqrt(posterior_variance_t) * noise 
+            variance = torch.sqrt(posterior_variance_t) * noise
+            return model_mean + variance 
 
     @torch.no_grad()
     def p_sample_loop(self, model, shape):
