@@ -31,7 +31,7 @@ class CelebADataModule(pl.LightningDataModule):
         ])
 
     def setup(self, stage=None):
-        self.dataset = load_dataset("nielsr/CelebA-faces", split="train", keep_in_memory=True)
+        self.dataset = load_dataset("nielsr/CelebA-faces", split="train", keep_in_memory=True, cache_dir='../cache/celeba')
         train_split = 0.6
         val_split = 0.2
         train_end_index = int(len(self.dataset) * train_split)

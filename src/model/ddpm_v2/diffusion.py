@@ -1,10 +1,10 @@
 import torch
+from model.scheduler.function import BaseScheduleFn
 
 class DiffusionModel:
-    def __init__(self, start_schedule=0.0001, end_schedule=0.02, timesteps=300):
-        self.start_schedule = start_schedule
-        self.end_schedule = end_schedule
+    def __init__(self, function: BaseScheduleFn, timesteps=300):
         self.timesteps = timesteps
+        self.function = function
 
         """
         if
@@ -15,7 +15,7 @@ class DiffusionModel:
 
 
         """
-        self.betas = torch.linspace(start_schedule, end_schedule, timesteps)
+        self.betas = self.function(self.timesteps)
         self.alphas = 1 - self.betas
         self.alphas_cumprod = torch.cumprod(self.alphas, axis=0)
 

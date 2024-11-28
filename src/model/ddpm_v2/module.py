@@ -4,15 +4,19 @@ import torch
 import torch.nn as nn
 from model.ddpm_v2.block import Block
 from config import Config
+from torchmetrics.image.fid import FrechetInceptionDistance
+from torchmetrics.image.inception import InceptionScore
+from util import up_scale_images
 
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device('cpu')
 
-class DDPM(pl.LightningModule):
-    def __init__(self, diffusion_model, img_channels = 3, time_embedding_dims = 128, labels = False, sequence_channels = (64, 128, 256, 512, 1024)):
+class DDPMModule(pl.LightningModule):
+    def __init__(self, diffusion_model=None, img_channels = 3, time_embedding_dims = 128, labels = False, sequence_channels = (64, 128, 256, 512, 1024), inverse_transform=None):
         super().__init__()
         self.diffusion_model = diffusion_model
         self.time_embedding_dims = time_embedding_dims
         sequence_channels_rev = reversed(sequence_channels)
+        self.inverse_transform = inverse_transform
 
         self.downsampling = nn.ModuleList([Block(channels_in, channels_out, time_embedding_dims, labels) for channels_in, channels_out in zip(sequence_channels, sequence_channels[1:])])
         self.upsampling = nn.ModuleList([Block(channels_in, channels_out, time_embedding_dims, labels,downsample=False) for channels_in, channels_out in zip(sequence_channels[::-1], sequence_channels[::-1][1:])])
@@ -20,6 +24,9 @@ class DDPM(pl.LightningModule):
         self.conv2 = nn.Conv2d(sequence_channels[0], img_channels, 1)
         
         self.mse = MeanSquaredError()
+        
+        self.inception = InceptionScore()
+        self.fid = FrechetInceptionDistance(feature=64)
         
 
     def forward(self, x, t):
@@ -65,8 +72,23 @@ class DDPM(pl.LightningModule):
         predicted_noise = self.forward(batch_noisy, t)
 
         loss = self.mse(noise, predicted_noise)
+        
+        upscaled_orig = up_scale_images(images, self.inverse_transform)
+        upscaled_gen = up_scale_images(batch_noisy - predicted_noise, self.inverse_transform)
+    
+        self.inception.update(upscaled_gen)
+        self.fid.update(upscaled_orig, real=True)
+        self.fid.update(upscaled_gen, real=False)
         self.log("test_loss", loss, prog_bar=True)
         return loss
+    
+    def on_test_epoch_end(self):
+        inception_score = self.inception.compute()
+        fid_score = self.fid.compute()
+        self.log("test_inception_mean", inception_score[0])
+        self.log("test_inception_std", inception_score[1])
+        self.log("test_fid", fid_score)
+        return super().on_test_epoch_end()
 
     def configure_optimizers(self):
         return torch.optim.AdamW(self.parameters(), lr=Config.learning_rate, weight_decay=Config.weight_decay)
