@@ -69,4 +69,6 @@ def plot_from_noise(model: DDPMModule, transform: transforms, n = 5):
             imgs = diff_imgs
         for idx, img in enumerate(imgs):
             ax[c][idx].imshow(transform(img))
+            ax[c][idx].axis('off')
+    plt.tight_layout()
     plt.savefig('diffusion-model.png')

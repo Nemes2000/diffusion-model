@@ -48,7 +48,7 @@ class DDPMModule(pl.LightningModule):
         predicted_noise = self.forward(batch_noisy, t)
         loss = self.mse(noise, predicted_noise)
 
-        self.log("train_loss", loss, on_epoch=True)
+        self.log("train_loss", loss, on_epoch=True, prog_bar=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -91,4 +91,4 @@ class DDPMModule(pl.LightningModule):
         return super().on_test_epoch_end()
 
     def configure_optimizers(self):
-        return torch.optim.AdamW(self.parameters(), lr=Config.learning_rate, weight_decay=Config.weight_decay)
+        return Config.optimizer(self.parameters(), lr=Config.learning_rate, weight_decay=Config.weight_decay)

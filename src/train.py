@@ -9,7 +9,7 @@ from baseline_model.vae import BaseLineImageGenerationVAE
 from model.ddpm_v2.diffusion import DiffusionModel
 from model.ddpm_v2.module import DDPMModule
 from data_visualization.plot_image import plot_from_noise
-from model.scheduler.function import LinearScheduleFn
+from model.scheduler.function import LinearScheduleFn, CosineBetaScheduleFn, QuadraticBetaSheduleFn
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
