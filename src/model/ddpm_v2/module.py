@@ -62,6 +62,17 @@ class DDPMModule(pl.LightningModule):
         loss = self.mse(noise, predicted_noise)
         self.log("val_loss", loss, prog_bar=True)
         return loss
+    
+    def _generate_random_images(self, images):
+        random_images = torch.rand_like(images)
+        
+        for i in reversed(range(self.diffusion_model.timesteps)):
+            t = torch.full((1,), i, dtype=torch.long, device=device)
+            diff_imgs = self.diffusion_model.backward(x=random_images, t=t, model=self)
+            if torch.isnan(diff_imgs).any(): break
+            random_images = diff_imgs
+
+        return random_images
 
     def test_step(self, batch, batch_idx):
         images, _ = batch
@@ -72,9 +83,11 @@ class DDPMModule(pl.LightningModule):
         predicted_noise = self.forward(batch_noisy, t)
 
         loss = self.mse(noise, predicted_noise)
+
+        random_images = self._generate_random_images(images)
         
         upscaled_orig = up_scale_images(images, self.inverse_transform)
-        upscaled_gen = up_scale_images(batch_noisy - predicted_noise, self.inverse_transform)
+        upscaled_gen = up_scale_images(random_images, self.inverse_transform)
     
         self.inception.update(upscaled_gen)
         self.fid.update(upscaled_orig, real=True)
