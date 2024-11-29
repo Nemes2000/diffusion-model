@@ -3,12 +3,13 @@ from baseline_model.vae import BaseLineImageGenerationVAE
 from config import Config
 from data_module.celeba import CelebADataModule
 from data_module.flowers import Flowers102DataModule
-from model.ddpm import DDPModule
-from model.net import UNet
+from model.ddpm_v2.diffusion import DiffusionModel
+from model.ddpm_v2.module import DDPMModule
 from model.scheduler.function import LinearScheduleFn
 from model.scheduler.time_scheduler import TimeScheduler
 import argparse
 import pytorch_lightning as pl
+import os
 
 
 
@@ -79,7 +80,7 @@ def optimalization_train(config=None, data_module=None, model=None):
 
         
         checkpoint_callback = pl.callbacks.ModelCheckpoint(monitor="val_loss", mode="min", dirpath=f'./model/{Config.model_name}', filename='best', save_top_k=1)
-        early_stopping_callback = pl.callbacks.early_stopping.EarlyStopping(monitor="val_loss", patience=5, verbose=False, mode="min")
+        early_stopping_callback = pl.callbacks.early_stopping.EarlyStopping(monitor="val_loss", patience=10, verbose=False, mode="min")
 
         logger = pl.loggers.WandbLogger(project=args.wandb_project, log_model="all")
         trainer = pl.Trainer(
@@ -102,7 +103,7 @@ if __name__ == "__main__":
     parser.add_argument('-type', type=str, choices=['baseline', 'diffusion'], default='baseline')
     args = parser.parse_args()
 
-    wandb.login()
+    wandb.login(key=os.getenv('WANDB_API_KEY'))
 
     Config.model_name = args.model_name
 
@@ -117,8 +118,7 @@ if __name__ == "__main__":
     if args.type == 'baseline':
         model = BaseLineImageGenerationVAE(Config.latent_dims)
     else:
-        time_scheduler = TimeScheduler(LinearScheduleFn(0.0001, 0.02), Config.time_steps)
-        unet = UNet()
-        model = DDPModule(time_scheduler=time_scheduler, model=unet, inverse_transform=data_module.reverse_transform)
+        diffusion_model = DiffusionModel(function=LinearScheduleFn(beta_start=0.0001, beta_end=0.02))
+        model = DDPMModule(diffusion_model, inverse_transform=data_module.reverse_transform)
 
     optimalization(data_module=data_module, project_name=args.wandb_project, model=model)
