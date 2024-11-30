@@ -103,6 +103,8 @@ if __name__ == "__main__":
     parser.add_argument('-type', type=str, choices=['baseline', 'diffusion'], default='baseline')
     args = parser.parse_args()
 
+    os.environ["WANDB_CACHE_DIR"] = "./cache/wandb"
+ 
     wandb.login(key=os.getenv('WANDB_API_KEY'))
 
     Config.model_name = args.model_name
