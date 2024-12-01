@@ -16,7 +16,7 @@ The repository is used to implement DDPM and document the work for the DeepLearn
 > [!NOTE]  
 > Since the original CelebA dataset is often not accessible online, we used the CelebA dataset from the huggingface site ([nielsr/CelebA-faces](https://huggingface.co/datasets/nielsr/CelebA-faces)). There is no difference in the two datasets so it was considered more convenient for the project to have a permanently accessible dataset. But in this dataset we don't have by default the train, validation and test data labels so we created the three dataset by hand.
 
-**Our approach**: We plan to implement a DDPM model to try to generate as realistic images as possible. We plan to measure the model on the CelebA and Flowers102 datasets. We plan to quantize the model (and measure the quality changes) and use [Gradio](https://www.gradio.app/) to build an AI service from it.
+**Our approach**: We plan to implement a DDPM model to try to generate as realistic images as possible. We plan to measure the model on the CelebA and Flowers102 datasets. We plan to use [Gradio](https://www.gradio.app/) to build an AI service from it.
 
 ## Related works
 
