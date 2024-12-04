@@ -1,4 +1,4 @@
-FROM pytorch/pytorch:2.4.1-cuda11.8-cudnn9-devel
+FROM python:3.12
 RUN apt-get update && apt-get upgrade -y
 RUN python -m pip install --upgrade pip
 
