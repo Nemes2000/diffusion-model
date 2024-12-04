@@ -38,6 +38,7 @@ Our .py and .ipynb files are located in the **src** folder:
 - config.py: It will contains all parameter that we want to optimize at hyperopt (not all parameters currently included).
 - eval.py: Calculates a given saved model's IS and FID score on a given dataset (celeba or flowers), and save result into stat.json file
 - train.py: Set up the model and wandb logging for training, and runs a training on given dataset (celeba or flowers)
+- hyperopt.py: Set up the model and wandb for hyperparamter optimization.
 - preprocess_data_source.py: The CelebA dataset is sometimes unavailable (restriction of Drive), so we downloaded it as ZIP and preprocess with this script (split into train/val/test based on [list_eval_partition.txt](https://drive.google.com/drive/folders/0B7EVK8r0v71pdjI3dmwtNm5jRkE?resourcekey=0-TD_RXHhlG6LPvwHReuw6IA))
 - baseline_model:
   - vae.py: Our baseline model, which is a VAE modell
@@ -48,15 +49,33 @@ Our .py and .ipynb files are located in the **src** folder:
 - data_visualization:
   - plot_hist.py: Plot histogram (RGB values) for images from dataloader (from first batch, first 5 elements)
   - plot_image.py: Contains the plot functions for plot images from dataloader (from first batch, first 10 elements), for plot images from latent dimension and for plot multiple generated images from a given image.
+- gradio_app:
+  - inference_module.py: Contains a LightningModule to load trained model for running in inference mode.
+- model:
+  - ddpm_v2:
+    - block.py: Implement a down-/upsampling block for UNet in DDPM.
+    - diffusion.py: Implement the diffusion backward and forward processes.
+    - embedding.py: Implement a Sinusoidal Position Embeddings to use it for timestep embedding.
+    - module.py: Contains a LigthningModule to handle train, validation and test pipeline.
+  - scheduler:
+    - function.py: Contains timestep function implementations for diffusion model.
 - first_step.ipynb: we tried out the dataset loading and the visualization
+- vae_baseline_flowers102.ipynb: We used it to train and test VAE on Colab.
 
 Other:
 
 - requirements.txt: Contains all Python libraries that we want to use.
 - Dockerfile: Contains a basic pytorch-cuda container description.
+- gradio.dockerfile: Contains the gradio application container description.
 - doc:
   - [evaluation.md](https://github.com/Nemes2000/diffusion-model/blob/main/doc/evaluation.md): Contains approaches and expectations for the evaluation of models.
   - [vae-result.md](https://github.com/Nemes2000/diffusion-model/blob/main/doc/vae-result.md): Contains the results of the VAE baseline model.
+  - [DL_documentation.pdf](https://github.com/Nemes2000/diffusion-model/blob/main/doc/DL_documentation.pdf): Contains the documentation of the project homework.
+- results:
+  - manual_fid_is_results.xlsx: Contains manual tested FID and IS results on Flowers102 and CelebA datasets.
+  - Contains more hyperopt results from wandb.
+- images:
+  - Contains generated images (VAE + DDPM)
 
 ## Run
 
