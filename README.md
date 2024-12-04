@@ -91,7 +91,7 @@ If you want to specify the training you can set this flag:
 Example usage:
 
 ```bash
-docker run --gpu all --rm -v ./data:/diffusion-model/data -v ./model:/diffusion-model/model -v ./logs:/diffusion-model/logs [IMAGE_NAME] python src/train.py -model-name 'vae-baseline' -log-wandb --wandb-project "vae-baseline" -dataset "celeba" -epoch 10
+docker run --gpus all --rm -v ./data:/diffusion-model/data -v ./model:/diffusion-model/model -v ./logs:/diffusion-model/logs [IMAGE_NAME] python src/train.py -model-name 'vae-baseline' -log-wandb --wandb-project "vae-baseline" -dataset "celeba" -epoch 10
 ```
 
 To eval the model, you need to run the container in the following format from the root directory:
