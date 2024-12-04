@@ -87,6 +87,10 @@ For our Docker container, you should mount volumes for the following folders:
 - diffusion-model/wandb: It contains Wandb logs if we use wandb logging with **-log-wandb** flag.
 - diffusion-model/stat.json: It contains evaluation result in a JSON object (with **-stat-file** flag you can change it)
 
+> [!NOTE]
+> For using wandb for logging or hyperopt, you have to set WANDB_API_KEY value to your wandb api key.
+> In docker run command use -e WANDB_API_KEY=my-api-key (replace my-api-key with the correct key)
+
 First build the image, run this command from the root directory:
 
 ```bash
@@ -130,4 +134,17 @@ Example usage:
 
 ```bash
 docker run --gpus all --rm -v ./data:/diffusion-model/data -v ./model:/diffusion-model/model -v ./logs:/diffusion-model/logs [IMAGE_NAME] python src/eval.py -path "./model/vae-baseline" -model "best" -dataset "flowers"
+```
+## Gradio
+
+We've created a simple Gradio interface for our trained model. If you want to use it, you need a trained model, which you can place in any place you like. You will need to build and run gradio.dockerfile, which you will need to attach the folder containing your model as a volume.
+
+```
+docker build -f gradio.dockerfile -t [IMAGE_NAME] .
+```
+
+Example for running Gradio in container:
+
+```
+docker run --gpus all --rm -p 7860:7860 -v ./model:/diffusion-model/model [IMAGE_NAME]
 ```
