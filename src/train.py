@@ -1,17 +1,15 @@
-from matplotlib import pyplot as plt
 import pytorch_lightning as pl
+import torch
 import wandb
 import argparse
 from config import Config
 from data_module.flowers import Flowers102DataModule
 from data_module.celeba import CelebADataModule
 from baseline_model.vae import BaseLineImageGenerationVAE
-from model.ddpm import DDPModule
-from model.net import UNet
-from model.net_v2 import Unet
+from model.ddpm_v2.diffusion import DiffusionModel
+from model.ddpm_v2.module import DDPMModule
 from data_visualization.plot_image import plot_from_noise
-from model.scheduler.time_scheduler import TimeScheduler
-from model.scheduler.function import CosineBetaScheduleFn
+from model.scheduler.function import LinearScheduleFn, CosineBetaScheduleFn, QuadraticBetaSheduleFn
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -53,19 +51,14 @@ if __name__ == '__main__':
     if args.type == 'baseline':
         model = BaseLineImageGenerationVAE(Config.latent_dims)
     else:
-        time_scheduler = TimeScheduler(CosineBetaScheduleFn(), Config.time_steps)
-        unet = Unet(
-            dim=Config.image_size,
-            channels=Config.channels,
-            dim_mults=(1, 2, 4,)
-        )
-        model = DDPModule(time_scheduler=time_scheduler, model=unet, inverse_transform=data_module.reverse_transform)
+        diffusion_model = DiffusionModel(function=LinearScheduleFn(beta_start=0.0001, beta_end=0.02))
+        model = DDPMModule(diffusion_model, inverse_transform=data_module.reverse_transform)
 
     trainer.fit(model, data_module)
 
     if args.type == 'diffusion':
-        plot_from_noise(model=model, transform=data_module.reverse_transform)
-    
+        plot_from_noise(model, data_module.reverse_transform)
+        
     if args.log_wandb:
         wandb.finish()
 

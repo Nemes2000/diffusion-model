@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from baseline_model.vae import BaseLineImageGenerationVAE
-from model.ddpm import DDPModule
+from model.ddpm_v2.module import DDPMModule
 from config import Config
 import torch
 from torchvision import transforms
+from tqdm import tqdm
 
 def show_images(data_loader: DataLoader, reverse_transform):
     _, axes = plt.subplots(nrows=2, ncols=5, figsize=(15, 6))
@@ -54,13 +55,20 @@ def plot_image_representations(model: BaseLineImageGenerationVAE, image: torch.T
     plt.tight_layout()
     plt.show()
 
-def plot_from_noise(model: DDPModule, transform: transforms, n = 5):
-    image = model.time_scheduler.sample(model.model, Config.image_target_size[0], n*n, 3)[-1]
-    _, axn = plt.subplots(n, n, figsize=(8, 8), sharex=True, sharey=True)
-    for i in range(n * n):
-        img = transform(image[i])
-        ax = axn[i // n, i % n]
-        ax.imshow(img)
-        ax.axis('off')
+def plot_from_noise(model: DDPMModule, transform: transforms, n = 5):
+    plt.figure(figsize=(15,15))
+    _, ax = plt.subplots(n, n, figsize = (32,32))
+    device = torch.device("cuda") if torch.cuda.is_available() else torch.device('cpu') 
+    for c in tqdm(range(n)):
+        imgs = torch.randn((n, 3) + Config.image_target_size).to(device)
+        for i in reversed(range(model.diffusion_model.timesteps)):
+            t = torch.full((1,), i, dtype=torch.long, device=device)
+            labels = torch.tensor([c] * n).resize(n, 1).float().to(device)
+            diff_imgs = model.diffusion_model.backward(x=imgs, t=t, model=model.eval().to(device))
+            if torch.isnan(diff_imgs).any(): break
+            imgs = diff_imgs
+        for idx, img in enumerate(imgs):
+            ax[c][idx].imshow(transform(img))
+            ax[c][idx].axis('off')
     plt.tight_layout()
-    plt.savefig("diffusion_batch_image.png")
+    plt.savefig('diffusion-model.png')

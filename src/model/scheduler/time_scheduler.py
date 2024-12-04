@@ -47,6 +47,8 @@ class TimeScheduler:
         )
         posterior_variance_t = betas_t
 
+        posterior_variance_t = betas_t
+ 
         if t_index == 0:
             return model_mean
         else:
