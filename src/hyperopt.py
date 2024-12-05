@@ -6,7 +6,6 @@ from data_module.flowers import Flowers102DataModule
 from model.ddpm_v2.diffusion import DiffusionModel
 from model.ddpm_v2.module import DDPMModule
 from model.scheduler.function import LinearScheduleFn
-from model.scheduler.time_scheduler import TimeScheduler
 import argparse
 import pytorch_lightning as pl
 import os
@@ -14,6 +13,12 @@ import os
 
 
 def optimalization(data_module, project_name, model):
+    """ Called in each optimalization setup for training, and model evaluation.
+
+        - data_module: the selected dataset on optimalization will be made
+        - project_name: into this project folder will the wandb log
+        - model: the selected model for optimalization 
+    """
     sweep_config = {
         'method': 'bayes',
         'metric': {
@@ -63,11 +68,19 @@ def optimalization(data_module, project_name, model):
 
 
 def wrapped_opt_train_function(data_module, model):
+    """Wrapper function for passing multiple parameters for the optimalization function.
+    """
     def train_wrapper(config=None):
         optimalization_train(config=config, data_module=data_module, model=model)
     return train_wrapper
 
 def optimalization_train(config=None, data_module=None, model=None):
+    """ Called in each optimalization setup for training, and model evaluation.
+
+        - config: given config from wandb sweeper
+        - data_module: the selected dataset on optimalization will be made
+        - model: the selected model for optimalization 
+    """
     with wandb.init(config=config):
         config = wandb.config
 
@@ -97,10 +110,10 @@ def optimalization_train(config=None, data_module=None, model=None):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-dataset', type=str, choices=['flowers', 'celeba'], default='flowers')
-    parser.add_argument('--wandb-project', type=str, default='diffusion-model')
-    parser.add_argument('-model-name', type=str, default='diffusion-model')
-    parser.add_argument('-type', type=str, choices=['baseline', 'diffusion'], default='baseline')
+    parser.add_argument('-dataset', type=str, choices=['flowers', 'celeba'], default='flowers', help="On this dataset will the train run. This can be the 'flowers' or 'celeba'.")
+    parser.add_argument('--wandb-project', type=str, default='diffusion-model', help="Into this project folder will the wandb log")
+    parser.add_argument('-model-name', type=str, default='diffusion-model', help="In this folder will be the logs.")
+    parser.add_argument('-type', type=str, choices=['baseline', 'diffusion'], default='baseline', help="Select the model for the training. Chose from 'baseline' or 'diffusion'.")
     args = parser.parse_args()
 
     os.environ["WANDB_CACHE_DIR"] = "./cache/wandb"

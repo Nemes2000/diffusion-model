@@ -14,6 +14,9 @@ model = None
 transform = None
 
 def generate_image():
+    """ Function for the gradio service. Generates an image and 
+        returns all the states of the image that the image was in when it was generated.
+    """
     global model
     global device
     global transform
@@ -27,12 +30,9 @@ def generate_image():
 
 
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser()
-
-    parser.add_argument('-path', type=str)
-    parser.add_argument('-model', type=str)
-
+    parser.add_argument('-path', type=str, help="The path to the folder where the desierd model for gradio app is.")
+    parser.add_argument('-model', type=str, help="The model name, which will be used in the gradio service.")
     args = parser.parse_args()
 
     model_path = f'{args.path}/{args.model}.ckpt'

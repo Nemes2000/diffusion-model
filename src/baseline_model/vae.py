@@ -9,6 +9,8 @@ from torchmetrics.image.inception import InceptionScore
 from util import up_scale_images
 
 class BaseLineImageGenerationVAE(pl.LightningModule):
+    """Its implements a basic VAE model.
+    """
     def __init__(self, latent_dim, in_channels=3, inverse_transform=None):
         super().__init__()
         self.save_hyperparameters()

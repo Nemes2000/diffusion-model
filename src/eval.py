@@ -11,13 +11,11 @@ from model.ddpm_v2.module import DDPMModule
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-
-    parser.add_argument('-path', type=str)
-    parser.add_argument('-model', type=str)
-    parser.add_argument('-dataset', type=str, choices=['flowers', 'celeba'], default='flowers')
-    parser.add_argument('-stat-file', type=str, default='stat.json')
-    parser.add_argument('-type', type=str, choices=['baseline', 'diffusion'], default='baseline')
-
+    parser.add_argument('-path', type=str, help="The path to the folder where the desired model for gradio app is.")
+    parser.add_argument('-model', type=str, help="The model name, which will be used in the gradio service.")
+    parser.add_argument('-dataset', type=str, choices=['flowers', 'celeba'], default='flowers', help="On this dataset will the train run. This can be the 'flowers' or 'celeba'.")
+    parser.add_argument('-stat-file', type=str, default='stat.json', help="Statistics from the model will be saved into this file.")
+    parser.add_argument('-type', type=str, choices=['baseline', 'diffusion'], default='baseline', help="Select the model for the training. Chose from 'baseline' or 'diffusion'.")
     args = parser.parse_args()
 
     model_path = f'{args.path}/{args.model}.ckpt'

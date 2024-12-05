@@ -8,6 +8,8 @@ from torchvision import transforms
 from tqdm import tqdm
 
 def show_images(data_loader: DataLoader, reverse_transform):
+    """ Plots the first ten images from the dataloader.
+    """
     _, axes = plt.subplots(nrows=2, ncols=5, figsize=(15, 6))
     for batch, _ in data_loader:
         for ax, item in zip(axes.flat,  batch[:10]):
@@ -19,6 +21,13 @@ def show_images(data_loader: DataLoader, reverse_transform):
     plt.show()
 
 def plot_image_from_latent_dim(model: BaseLineImageGenerationVAE, transform: transforms, n = 3, latent_dims = Config.latent_dims, random_state = 42):
+    """ Plots images sampled from VAE model latent space.
+
+        - model: an instance of the BaseLineImageGenerationVAE class.
+        - transform: the reverse transformation defined to get from torch an image.
+        - n: there will be n row, and each row will contain n images.
+        - latent_dim: the latent space's vectore size
+    """
     torch.manual_seed(random_state)
     fig, axn = plt.subplots(n, n, figsize=(8, 8), sharex=True, sharey=True)
     for i in range(n * n):
@@ -34,6 +43,13 @@ def plot_image_from_latent_dim(model: BaseLineImageGenerationVAE, transform: tra
     plt.show()
 
 def plot_image_representations(model: BaseLineImageGenerationVAE, image: torch.Tensor, transform: transforms, n = 5, random_state = 42):
+    """ Plots images which are in the VAE model latent dimension space close to the original image.
+
+        - model: an instance of the BaseLineImageGenerationVAE class.
+        - image: the image which will be passed to the VAE model
+        - transform: the reverse transformation defined to get from torch an image.
+        - n: there will be n row, and each row will contain n images.
+    """
     torch.manual_seed(random_state)
     fig, axn = plt.subplots(1, n + 1, figsize=(2 *  (n + 1),  2), sharex=True, sharey=True)
     tensor_shape = (1, 3,) + Config.image_target_size
@@ -56,6 +72,12 @@ def plot_image_representations(model: BaseLineImageGenerationVAE, image: torch.T
     plt.show()
 
 def plot_from_noise(model: DDPMModule, transform: transforms, n = 5):
+    """ Saves an image matrix which are generated from the same noise with an instance of the diffusion model.
+
+        - model: an instance of the DDPMModule class.
+        - transform: the reverse transformation defined to get from torch an image.
+        - n: there will be n row, and each row will contain n images.
+    """
     plt.figure(figsize=(15,15))
     _, ax = plt.subplots(n, n, figsize = (32,32))
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device('cpu') 
@@ -63,7 +85,7 @@ def plot_from_noise(model: DDPMModule, transform: transforms, n = 5):
         imgs = torch.randn((n, 3) + Config.image_target_size).to(device)
         for i in reversed(range(model.diffusion_model.timesteps)):
             t = torch.full((1,), i, dtype=torch.long, device=device)
-            labels = torch.tensor([c] * n).resize(n, 1).float().to(device)
+            _ = torch.tensor([c] * n).resize(n, 1).float().to(device)
             diff_imgs = model.diffusion_model.backward(x=imgs, t=t, model=model.eval().to(device))
             if torch.isnan(diff_imgs).any(): break
             imgs = diff_imgs

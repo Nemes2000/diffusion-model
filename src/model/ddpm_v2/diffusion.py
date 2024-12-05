@@ -2,28 +2,17 @@ import torch
 from model.scheduler.function import BaseScheduleFn
 
 class DiffusionModel:
+    """ It's implements the forward and backward process based on the original publication.
+    """
     def __init__(self, function: BaseScheduleFn, timesteps=300):
         self.timesteps = timesteps
         self.function = function
 
-        """
-        if
-            betas = [0.1, 0.2, 0.3, ...]
-        then
-            alphas = [0.9, 0.8, 0.7, ...]
-            alphas_cumprod = [0.9, 0.9 * 0.8, 0.9 * 0.8, * 0.7, ...]
-
-
-        """
         self.betas = self.function(self.timesteps)
         self.alphas = 1 - self.betas
         self.alphas_cumprod = torch.cumprod(self.alphas, axis=0)
 
     def forward(self, x_0, t, device):
-        """
-        x_0: (B, C, H, W)
-        t: (B,)
-        """
         noise = torch.randn_like(x_0)
         sqrt_alphas_cumprod_t = self.get_index_from_list(self.alphas_cumprod.sqrt(), t, x_0.shape)
         sqrt_one_minus_alphas_cumprod_t = self.get_index_from_list(torch.sqrt(1. - self.alphas_cumprod), t, x_0.shape)
@@ -35,10 +24,8 @@ class DiffusionModel:
 
     @torch.no_grad()
     def backward(self, x, t, model, **kwargs):
-        """
-        Calls the model to predict the noise in the image and returns
-        the denoised image.
-        Applies noise to this image, if we are not in the last step yet.
+        """ Calls the model to predict the noise in the image and returns the denoised image.
+            Applies noise to this image, if we are not in the last step yet.
         """
         betas_t = self.get_index_from_list(self.betas, t, x.shape)
         sqrt_one_minus_alphas_cumprod_t = self.get_index_from_list(torch.sqrt(1. - self.alphas_cumprod), t, x.shape)
@@ -56,20 +43,8 @@ class DiffusionModel:
 
     @staticmethod
     def get_index_from_list(values, t, x_shape):
+        """ Pick the values from vals according to the indices stored in `t`.
+        """
         batch_size = t.shape[0]
-        """
-        pick the values from vals
-        according to the indices stored in `t`
-        """
         result = values.gather(-1, t.cpu())
-        """
-        if
-        x_shape = (5, 3, 64, 64)
-            -> len(x_shape) = 4
-            -> len(x_shape) - 1 = 3
-
-        and thus we reshape `out` to dims
-        (batch_size, 1, 1, 1)
-
-        """
         return result.reshape(batch_size, *((1,) * (len(x_shape) - 1))).to(t.device)

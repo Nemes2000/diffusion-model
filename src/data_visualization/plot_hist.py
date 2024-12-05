@@ -3,6 +3,8 @@ from torch.utils.data import DataLoader
 import numpy as np
 
 def show_rgb_histogram(data_loader: DataLoader, reverse_transform):
+    """ Ploting the first batch's five images' rgb histogram from the given dataloader.
+    """
     plt.figure(figsize=(12, 12))
     plt.subplots_adjust(wspace=0.5, hspace=0.5)
     for batch, _ in data_loader:

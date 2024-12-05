@@ -14,12 +14,12 @@ from model.scheduler.function import LinearScheduleFn, CosineBetaScheduleFn, Qua
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-log-wandb', action='store_true')
-    parser.add_argument('--wandb-project', type=str, default='diffusion-model')
-    parser.add_argument('-epoch', type=int, default=Config.num_of_epochs)
-    parser.add_argument('-model-name', type=str, default='diffusion-model')
-    parser.add_argument('-dataset', type=str, choices=['flowers', 'celeba'], default='flowers')
-    parser.add_argument('-type', type=str, choices=['baseline', 'diffusion'], default='baseline')
+    parser.add_argument('-log-wandb', action='store_true', help="Wandb logging will be used.")
+    parser.add_argument('--wandb-project', type=str, default='diffusion-model', help="Into this wandb project will the wandb log.")
+    parser.add_argument('-epoch', type=int, default=Config.num_of_epochs, help="Number of epuchs.")
+    parser.add_argument('-model-name', type=str, default='diffusion-model', help="In this folder will be the logs.")
+    parser.add_argument('-dataset', type=str, choices=['flowers', 'celeba'], default='flowers', help="On this dataset will the train run. This can be the 'flowers' or 'celeba'.")
+    parser.add_argument('-type', type=str, choices=['baseline', 'diffusion'], default='baseline', help="Select the model for the training. Chose from 'baseline' or 'diffusion'.")
 
     args = parser.parse_args()
 

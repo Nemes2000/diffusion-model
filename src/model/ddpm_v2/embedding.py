@@ -3,6 +3,9 @@ import torch.nn as nn
 import math
 
 class SinusoidalPositionEmbeddings(nn.Module):
+    """ A class to generate sinusoidal position embeddings for time steps.
+        Used in diffusion models to encode temporal information into a continuous representation.
+    """
     def __init__(self, dim):
         super().__init__()
         self.dim = dim

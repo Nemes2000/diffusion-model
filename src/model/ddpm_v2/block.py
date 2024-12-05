@@ -2,6 +2,8 @@ import torch.nn as nn
 from model.ddpm_v2.embedding import SinusoidalPositionEmbeddings
 
 class Block(nn.Module):
+    """ Downsampling/upsampling block
+    """
     def __init__(self, channels_in, channels_out, time_embedding_dims, labels, num_filters = 3, downsample=True):
         super().__init__()
 

@@ -6,6 +6,9 @@ from model.ddpm_v2.block import Block
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device('cpu')
 
 class InferenceDDPMModule(pl.LightningModule):
+    """ Model for the Gradio app. It contains the bare minimum required for
+        a diffusion model to generate image.
+    """
     def __init__(self, diffusion_model=None, img_channels = 3, time_embedding_dims = 128, labels = False, sequence_channels = (64, 128, 256, 512, 1024), inverse_transform=None):
         super().__init__()
         self.diffusion_model = diffusion_model

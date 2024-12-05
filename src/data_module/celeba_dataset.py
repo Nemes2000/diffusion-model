@@ -3,6 +3,9 @@ import os
 from PIL import Image
 
 class CelebADataset(Dataset):
+    """ Loads in Celeba dataset in subsets with the given transform methods.
+
+    """
     def __init__(self, subset: Subset, transform=None):
         self.subset = subset
         self.transform = transform

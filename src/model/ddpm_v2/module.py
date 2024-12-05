@@ -11,6 +11,9 @@ from util import up_scale_images
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device('cpu')
 
 class DDPMModule(pl.LightningModule):
+    """ This module integrates the model with teaching, validation and testing.
+        It is also logs some model metrics.
+    """
     def __init__(self, diffusion_model=None, img_channels = 3, time_embedding_dims = 128, labels = False, sequence_channels = (64, 128, 256, 512, 1024), inverse_transform=None):
         super().__init__()
         self.diffusion_model = diffusion_model
@@ -40,7 +43,7 @@ class DDPMModule(pl.LightningModule):
 
         return self.conv2(o)
 
-    def training_step(self, batch, batch_idx):
+    def training_step(self, batch, _):
         images, _ = batch
         t = torch.randint(0, self.diffusion_model.timesteps, (images.shape[0],)).long().to(device)
         images = images.to(device)
@@ -51,7 +54,7 @@ class DDPMModule(pl.LightningModule):
         self.log("train_loss", loss, on_epoch=True, prog_bar=True)
         return loss
 
-    def validation_step(self, batch, batch_idx):
+    def validation_step(self, batch, _):
         images, _ = batch
         t = torch.randint(0, self.diffusion_model.timesteps, (images.shape[0],)).long().to(device)
         images = images.to(device)
@@ -74,7 +77,7 @@ class DDPMModule(pl.LightningModule):
 
         return random_images
 
-    def test_step(self, batch, batch_idx):
+    def test_step(self, batch, _):
         images, _ = batch
         t = torch.randint(0, self.diffusion_model.timesteps, (images.shape[0],)).long().to(device)
         images = images.to(device)

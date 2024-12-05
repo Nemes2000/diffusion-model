@@ -2,6 +2,10 @@ import zipfile
 import shutil
 import argparse
 
+""" Its deprecated. 
+    We used it in the first iteration of the project, but now we dont use any of the underlying finctions
+"""
+
 def load_partition_description(file_name: str):
     with open(file_name) as input:
         return [line.strip().split(' ') for line in input.readlines()]

@@ -6,12 +6,17 @@ from torchvision import transforms
 import argparse
 from data_visualization.plot_image import plot_image_from_latent_dim, plot_image_representations, plot_from_noise
 import torch
-from config import Config
 from model.ddpm_v2.diffusion import DiffusionModel
 from model.scheduler.function import LinearScheduleFn
 from model.ddpm_v2.module import DDPMModule
 
 def plot_n_representation(model: BaseLineImageGenerationVAE, dataloader: DataLoader, transform: transforms):
+    """ Plots an image matrix from the VAE model latent dimension space close to the original images.
+
+        - model: an instance of the BaseLineImageGenerationVAE class.
+        - dataloader: the selected dataloader
+        - transform: the reverse transformation defined to get from torch an image.
+    """
     for batch, _ in dataloader:
         permuted_batch = torch.randperm(batch.size(0))
         first_image = batch[permuted_batch[0]]
@@ -22,11 +27,11 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-path', type=str)
-    parser.add_argument('-model', type=str)
-    parser.add_argument('-dataset', type=str, choices=['flowers', 'celeba'], default='flowers')
-    parser.add_argument('-mode', type=str, choices=['latent', 'random', 'noise'], default='latent')
-    parser.add_argument('-type', type=str, choices=['baseline', 'diffusion'], default='baseline')
+    parser.add_argument('-path', type=str, help="The path to the folder where the desired model for gradio app is.")
+    parser.add_argument('-model', type=str, help="The model name, which will be used in the gradio service.")
+    parser.add_argument('-dataset', type=str, choices=['flowers', 'celeba'], default='flowers', help="On this dataset will the train run. This can be the 'flowers' or 'celeba'.")
+    parser.add_argument('-mode', type=str, choices=['latent', 'random', 'noise'], default='latent', help="Images will be generated from the given space/method by this arg.")
+    parser.add_argument('-type', type=str, choices=['baseline', 'diffusion'], default='baseline', help="Select the model for the training. Chose from 'baseline' or 'diffusion'.")
 
     args = parser.parse_args()
 

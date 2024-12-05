@@ -1,6 +1,8 @@
 import torch
 
 class Config():
+  """ Contains configurable parameters of the model.
+  """
   # image default crop size in celeba: 218*178
   image_target_size = (64,64)
   batch_size = 64
