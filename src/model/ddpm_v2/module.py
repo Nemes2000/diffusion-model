@@ -43,7 +43,7 @@ class DDPMModule(pl.LightningModule):
 
         return self.conv2(o)
 
-    def training_step(self, batch, _):
+    def training_step(self, batch, batch_idx):
         images, _ = batch
         t = torch.randint(0, self.diffusion_model.timesteps, (images.shape[0],)).long().to(device)
         images = images.to(device)
@@ -54,7 +54,7 @@ class DDPMModule(pl.LightningModule):
         self.log("train_loss", loss, on_epoch=True, prog_bar=True)
         return loss
 
-    def validation_step(self, batch, _):
+    def validation_step(self, batch, batch_idx):
         images, _ = batch
         t = torch.randint(0, self.diffusion_model.timesteps, (images.shape[0],)).long().to(device)
         images = images.to(device)
@@ -77,7 +77,7 @@ class DDPMModule(pl.LightningModule):
 
         return random_images
 
-    def test_step(self, batch, _):
+    def test_step(self, batch, batch_idx):
         images, _ = batch
         t = torch.randint(0, self.diffusion_model.timesteps, (images.shape[0],)).long().to(device)
         images = images.to(device)

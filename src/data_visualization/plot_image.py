@@ -85,7 +85,7 @@ def plot_from_noise(model: DDPMModule, transform: transforms, n = 5):
         imgs = torch.randn((n, 3) + Config.image_target_size).to(device)
         for i in reversed(range(model.diffusion_model.timesteps)):
             t = torch.full((1,), i, dtype=torch.long, device=device)
-            _ = torch.tensor([c] * n).resize(n, 1).float().to(device)
+            labels = torch.tensor([c] * n).resize(n, 1).float().to(device)
             diff_imgs = model.diffusion_model.backward(x=imgs, t=t, model=model.eval().to(device))
             if torch.isnan(diff_imgs).any(): break
             imgs = diff_imgs

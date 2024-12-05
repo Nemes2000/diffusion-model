@@ -34,7 +34,7 @@ class CelebADataModule(pl.LightningDataModule):
             transforms.ToPILImage(),
         ])
 
-    def setup(self):
+    def setup(self, stage=None):
         """ Calling this method, will download the train, data from source. 
             Then the train data will be splitted to train, validation and test data
             and stored in memory.

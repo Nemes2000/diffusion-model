@@ -35,7 +35,7 @@ class Flowers102DataModule(pl.LightningDataModule):
 
         self.image_folder = './data/flowers102'
 
-    def setup(self):
+    def setup(self, stage=None):
         """ Calling this method, will download the train, validation and test data
             from source and stored in memory.
         """
