@@ -135,9 +135,13 @@ Example usage:
 ```bash
 docker run --gpus all --rm -v ./data:/diffusion-model/data -v ./model:/diffusion-model/model -v ./logs:/diffusion-model/logs [IMAGE_NAME] python src/eval.py -path "./model/vae-baseline" -model "best" -dataset "flowers"
 ```
+
 ## Gradio
 
 We've created a simple Gradio interface for our trained model. If you want to use it, you need a trained model, which you can place in any place you like. You will need to build and run gradio.dockerfile, which you will need to attach the folder containing your model as a volume.
+
+> [!NOTE]
+> This image uses the Dockerfile image used for training and testing. Therefore, it must first be built and named with the -t diffusion tag so that it can access it.
 
 ```
 docker build -f gradio.dockerfile -t [IMAGE_NAME] .
